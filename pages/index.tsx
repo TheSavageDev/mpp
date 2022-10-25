@@ -1,60 +1,91 @@
-import React from "react"
-import { GetStaticProps } from "next"
-import Layout from "../components/Layout"
-import Post, { PostProps } from "../components/Post"
+import React from "react";
+import Layout from "../components/Layout";
+import { Typography } from "@mui/material";
+import { Box, Tabs, Tab } from "@mui/material";
+import { Main } from "../components/Main";
+import { Staff } from "../components/Staff";
+import { Teams } from "../components/Teams";
+import { PlacesToHelp } from "../components/PlacesToHelp";
+import { HowYouCanHelp } from "../components/HowYouCanHelp";
+import { HowWeCanHelp } from "../components/HowWeCanHelp";
+import { Sponsors } from "../components/Sponsors";
+import { ServiceVsTherapy } from "../components/ServiceVsTherapy";
 
-export const getStaticProps: GetStaticProps = async () => {
-  const feed = [
-    {
-      id: "1",
-      title: "Prisma is the perfect ORM for Next.js",
-      content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-      published: false,
-      author: {
-        name: "Nikolas Burk",
-        email: "burk@prisma.io",
-      },
-    },
-  ]
-  return { 
-    props: { feed }, 
-    revalidate: 10 
-  }
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
 }
 
-type Props = {
-  feed: PostProps[]
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
 }
 
-const Blog: React.FC<Props> = (props) => {
+const Home: React.FC = () => {
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
   return (
     <Layout>
-      <div className="page">
-        <h1>Public Feed</h1>
-        <main>
-          {props.feed.map((post) => (
-            <div key={post.id} className="post">
-              <Post post={post} />
-            </div>
-          ))}
-        </main>
-      </div>
-      <style jsx>{`
-        .post {
-          background: white;
-          transition: box-shadow 0.1s ease-in;
-        }
-
-        .post:hover {
-          box-shadow: 1px 1px 3px #aaa;
-        }
-
-        .post + .post {
-          margin-top: 2rem;
-        }
-      `}</style>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        textColor="secondary"
+        indicatorColor="secondary"
+      >
+        <Tab label="Welcome" />
+        <Tab label="Our Staff" />
+        <Tab label="Teams" />
+        <Tab label="Service Dogs vs Therapy Dogs" />
+        <Tab label="How We Can Help" />
+        <Tab label="How You Can Help" />
+        <Tab label="Sponsors and Friends" />
+        <Tab label="Places To Help" />
+      </Tabs>
+      <TabPanel value={value} index={0}>
+        <Main />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <Staff />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <Teams />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        <ServiceVsTherapy />
+      </TabPanel>
+      <TabPanel value={value} index={4}>
+        <HowWeCanHelp />
+      </TabPanel>
+      <TabPanel value={value} index={5}>
+        <HowYouCanHelp />
+      </TabPanel>
+      <TabPanel value={value} index={6}>
+        <Sponsors />
+      </TabPanel>
+      <TabPanel value={value} index={7}>
+        <PlacesToHelp />
+      </TabPanel>
     </Layout>
-  )
-}
+  );
+};
 
-export default Blog
+export default Home;

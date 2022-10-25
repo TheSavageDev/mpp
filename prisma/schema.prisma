@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Handler {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?  @unique
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  dog       Dog?
+  logbook   Logbook?
+
+  @@map(name: "handlers")
+}
+
+model Dog {
+  id           String  @id @default(cuid())
+  name         String?
+  graduatedCgc Boolean @default(false)
+  graduatedPat Boolean @default(false)
+  handler      Handler @relation(fields: [handlerId], references: [id])
+  handlerId    String  @unique
+
+  @@map(name: "dogs")
+}
+
+model Logbook {
+  id        String  @id @default(cuid())
+  handler   Handler @relation(fields: [handlerId], references: [id])
+  entries   Entry[]
+  totalMinutes Int @default(0)
+  handlerId String  @unique
+}
+
+model Entry {
+  id        String   @id @default(cuid())
+  logbook   Logbook  @relation(fields: [logbookId], references: [id])
+  date      DateTime @default(now())
+  minutes   Int?
+  location  String?
+  notes     String?
+  tasks     String?
+  logbookId String
+}
