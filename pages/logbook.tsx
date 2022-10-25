@@ -3,37 +3,37 @@ import { GetStaticProps } from "next";
 import Layout from "../components/Layout";
 import prisma from "../lib/prisma";
 
-export const getStaticProps: GetStaticProps = async () => {
-  const handlers = await prisma.handler.findMany({
-    select: {
-      id: true,
-      name: true,
-      dog: true,
-      logbook: {
-        select: {
-          id: true,
-          totalMinutes: true,
-          entries: {
-            select: {
-              id: true,
-              tasks: true,
-              minutes: true,
-              notes: true,
-              location: true,
-              date: true,
-            },
-          },
-        },
-      },
-      email: true,
-    },
-  });
+// export const getStaticProps: GetStaticProps = async () => {
+//   const handlers = await prisma.handler.findMany({
+//     select: {
+//       id: true,
+//       name: true,
+//       dog: true,
+//       logbook: {
+//         select: {
+//           id: true,
+//           totalMinutes: true,
+//           entries: {
+//             select: {
+//               id: true,
+//               tasks: true,
+//               minutes: true,
+//               notes: true,
+//               location: true,
+//               date: true,
+//             },
+//           },
+//         },
+//       },
+//       email: true,
+//     },
+//   });
 
-  return {
-    props: { handlers: JSON.parse(JSON.stringify(handlers)) },
-    revalidate: 10,
-  };
-};
+//   return {
+//     props: { handlers: JSON.parse(JSON.stringify(handlers)) },
+//     revalidate: 10,
+//   };
+// };
 
 type Props = {
   handlers: {
@@ -59,8 +59,6 @@ type Props = {
 };
 
 const Blog: React.FC<Props> = (props) => {
-  console.log(props.handlers);
-  console.log(props.handlers[0].logbook.entries);
   return (
     <Layout>
       <main>
